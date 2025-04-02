@@ -8,4 +8,4 @@ WORKDIR /app
 COPY . .
 
 # Define the default command to run when starting the container
-CMD ["bash"]
+CMD ["sh"]
