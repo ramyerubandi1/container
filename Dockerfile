@@ -1,18 +1,23 @@
-FROM amazonlinux:latest
+FROM alpine:latest
 
-# Install AWS CLI and other dependencies
-RUN yum install -y unzip curl && \
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm -rf awscliv2.zip aws
+# Install required packages
+RUN apk add --no-cache build-base wget tar 
 
-# Copy install and entrypoint scripts
-COPY install.sh /install.sh
-COPY entrypoint.sh /entrypoint.sh
+# Set working directory
+WORKDIR /busybox
 
-# Make scripts executable
-RUN chmod +x /install.sh /entrypoint.sh
+# Download and extract BusyBox source code
+RUN wget https://busybox.net/downloads/busybox-1.36.1.tar.bz2 \
+    && tar -xjf busybox-1.36.1.tar.bz2 \
+    && mv busybox-1.36.1 busybox-source \
+    && rm busybox-1.36.1.tar.bz2
 
-# Set the entrypoint script
-ENTRYPOINT ["/entrypoint.sh"]
+WORKDIR /busybox/busybox-source
+
+# Configure, compile, and install BusyBox
+RUN make defconfig \
+    && make -j$(nproc) \
+    && make install
+
+# Set up BusyBox as the default shell
+CMD ["/busybox/busybox-source/_install/bin/sh"]
