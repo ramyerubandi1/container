@@ -1,17 +1,14 @@
-FROM busybox:latest
+# Start with a base image
+FROM busybox
 
-# Install necessary packages. Install the necessary kernel headers package.
+# Install necessary packages
+RUN apt-get update && apt-get install -y make gcc perl linux-headers-$(uname -r) && apt-get clean
 
+# Add your application files
+COPY . /app
 
-RUN apt-get update && \
-    apt-get install -### Suggested Workflow Changes:
-Update your `.github/worky make gcc perl linux-headers-$(uname -r) && \
-    aptflows/docker-image.yml` to include steps for installing the-get clean
+# Set the working directory
+WORKDIR /app
 
-# Build BusyBox
-RUN make defconfig && \
- required dependencies.
-
-```yaml
-name:    make -j$(nproc) && \
-    make install
+# Define the command to run your application
+CMD ["sh", "start.sh"]
