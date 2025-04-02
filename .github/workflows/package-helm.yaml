@@ -49,7 +49,7 @@ jobs:
         run: |
           git config --global user.name "ramy"
           git config --global user.email "rmrbnd@gmail.com"
-          git add docs/
+          git add busybox-docs/
           git commit -m "Auto-publish Helm chart version ${{ env.VERSION }}" || echo "No changes to commit"
           
           # Use GITHUB_TOKEN for authentication (built-in token provided by GitHub Actions)
