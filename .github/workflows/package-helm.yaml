@@ -1,0 +1,56 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'busybox-charts/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'busybox-charts/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Get current chart version
+        id: get_version
+        run: |
+          VERSION=$(grep 'version:' charts/nginx/Chart.yaml | awk '{print $2}')
+          echo "Current chart version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Increment Chart Version
+        id: increment_version
+        run: |
+          VERSION=$(echo ${{ env.VERSION }} | awk -F. -v OFS=. '{$NF++; print $0}')
+          echo "New version: $VERSION"
+          sed -i "s/version: ${{ env.VERSION }}/version: $VERSION/" busybox-charts/Chart.yaml
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Package Helm Chart
+        run: |
+          helm package charts/nginx -d docs/ --version ${{ env.VERSION }}
+          helm repo index docs --url https://ramyerubandi1.github.io/docs/
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "ramy"
+          git config --global user.email "rmrbnd@gmail.com"
+          git add docs/
+          git commit -m "Auto-publish Helm chart version ${{ env.VERSION }}" || echo "No changes to commit"
+          
+          # Use GITHUB_TOKEN for authentication (built-in token provided by GitHub Actions)
+          git push origin main || echo "No changes to push"
