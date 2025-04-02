@@ -1,23 +1,17 @@
-FROM alpine:latest
+FROM busybox:latest
 
-# Install required packages
-RUN apk add --no-cache build-base wget tar 
+# Install necessary packages. Install the necessary kernel headers package.
 
-# Set working directory
-WORKDIR /busybox
 
-# Download and extract BusyBox source code
-RUN wget https://busybox.net/downloads/busybox-1.36.1.tar.bz2 \
-    && tar -xjf busybox-1.36.1.tar.bz2 \
-    && mv busybox-1.36.1 busybox-source \
-    && rm busybox-1.36.1.tar.bz2
+RUN apt-get update && \
+    apt-get install -### Suggested Workflow Changes:
+Update your `.github/worky make gcc perl linux-headers-$(uname -r) && \
+    aptflows/docker-image.yml` to include steps for installing the-get clean
 
-WORKDIR /busybox/busybox-source
+# Build BusyBox
+RUN make defconfig && \
+ required dependencies.
 
-# Configure, compile, and install BusyBox
-RUN make defconfig \
-    && make -j$(nproc) \
-    && make install
-
-# Set up BusyBox as the default shell
-CMD ["/busybox/busybox-source/_install/bin/sh"]
+```yaml
+name:    make -j$(nproc) && \
+    make install
