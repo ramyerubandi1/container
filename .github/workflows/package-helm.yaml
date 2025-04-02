@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'busybox-charts/**'
+      - 'busybox-chart/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'busybox-charts/**'
+      - 'busybox-chart/**'
 
 jobs:
   build:
@@ -37,13 +37,13 @@ jobs:
         run: |
           VERSION=$(echo ${{ env.VERSION }} | awk -F. -v OFS=. '{$NF++; print $0}')
           echo "New version: $VERSION"
-          sed -i "s/version: ${{ env.VERSION }}/version: $VERSION/" busybox-charts/Chart.yaml
+          sed -i "s/version: ${{ env.VERSION }}/version: $VERSION/" busybox-chart/Chart.yaml
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Package Helm Chart
         run: |
-          helm package charts/nginx -d docs/ --version ${{ env.VERSION }}
-          helm repo index docs --url https://ramyerubandi1.github.io/docs/
+          helm package busybox-chart -d busysbox-docs/ --version ${{ env.VERSION }}
+          helm repo index busybox-docs --url https://ramyerubandi1.github.io/busybox-docs/
 
       - name: Commit and Push Changes
         run: |
