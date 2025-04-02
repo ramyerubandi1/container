@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  busybox:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-04-02T06:50:18.582841624Z"
+    description: A Helm chart for deploying BusyBox
+    digest: 18947187415fe0f8751fcd609ea80678f384a1afe5fbb342f2bfcbd958ae5317
+    name: busybox
+    urls:
+    - https://ramyerubandi1.github.io/busybox-docs/busybox-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-04-02T06:50:18.582577185Z"
