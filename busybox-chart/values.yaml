@@ -1,0 +1,11 @@
+replicaCount: 2
+
+image:
+  repository: 376129875853.dkr.ecr.ap-south-1.amazonaws.com/busybox 
+  tag: latest
+
+resources:
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
